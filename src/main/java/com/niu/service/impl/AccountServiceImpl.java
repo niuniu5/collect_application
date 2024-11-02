@@ -21,7 +21,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Account findByUsername(String username) {
         AccountEntity accountEntity =  accountRepository.findByUsername(username);
-
+        if (accountEntity ==null){
+            return null;
+        }
         return Account.builder()
                 .id(accountEntity.getId())
                 .username(accountEntity.getUsername())
