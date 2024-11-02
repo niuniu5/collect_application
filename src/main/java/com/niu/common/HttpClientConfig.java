@@ -12,6 +12,8 @@ public class HttpClientConfig {
 
     @Bean
     public HttpClient httpClient() {
-            return 
+            return HttpClient.newBuilder().
+                    connectTimeout(Duration.ofSeconds(30)).
+                    build();
     }
 }
