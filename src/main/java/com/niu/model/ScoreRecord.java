@@ -16,7 +16,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Setter
 @Getter
-@Component
 public class ScoreRecord implements Serializable {
 
     /**自增长ID*/

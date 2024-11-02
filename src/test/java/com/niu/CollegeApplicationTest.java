@@ -40,16 +40,16 @@ public class CollegeApplicationTest {
      */
     @Test
     public void test3(){
-        List<College> list = collegeService.getAllColleges();
-        for (College college : list) {
-            Integer  id = college.getId();
-            Integer cityid = college.getCityId();
-            Integer provinceid = collegeService.getProvinceIdByCityId(cityid);
-            if(provinceid  !=  null){
-                collegeService.updateCollegeProvinceId(provinceid,id);
-                System.out.println(college.getName());
-            }
-        }
+//        List<College> list = collegeService.getAllColleges();
+//        for (College college : list) {
+//            Integer  id = college.getId();
+//            String cityid = college.getCityId();
+//            Integer provinceid = collegeService.getProvinceIdByCityId(cityid);
+//            if(provinceid  !=  null){
+//                collegeService.updateCollegeProvinceId(provinceid,id);
+//                System.out.println(college.getName());
+//            }
+//        }
     }
 
     @Test

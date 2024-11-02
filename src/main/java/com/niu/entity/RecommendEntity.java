@@ -27,7 +27,7 @@ public class RecommendEntity implements Serializable {
 
     /**学生ID*/
     @Column(name = "student_id")
-    private Integer studentId;
+    private Long studentId;
 
     /**推荐大学*/
     @Column(name = "college_id")

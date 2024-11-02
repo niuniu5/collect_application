@@ -23,7 +23,7 @@ public class Recommend implements Serializable {
     private Long id;
 
     /**学生ID*/
-    private Integer studentId;
+    private Long studentId;
 
     /**推荐大学*/
     private Integer collegeId;

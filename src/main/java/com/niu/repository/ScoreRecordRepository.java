@@ -17,6 +17,10 @@ public interface ScoreRecordRepository extends JpaRepository<ScoreRecordEntity, 
     /** 获取录取分数线记录, 根据大学ID */
     List<ScoreRecordEntity> getScoreRecordByCollegeId(Integer collegeId);
 
+
+    /** 通过ID获取 */
+    ScoreRecordEntity  getScoreRecordById(Integer id);
+
     /** 获取录取分数线记录, 根据大学ID和专业ID */
     List<ScoreRecordEntity> getScoreRecordByCollegeIdAndMajorId(Integer collegeId, Integer majorId);
 }

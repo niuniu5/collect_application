@@ -1,6 +1,8 @@
 package com.niu.service.impl;
 
+import com.niu.common.RecommendUtil;
 import com.niu.entity.RecommendEntity;
+import com.niu.entity.ScoreRecordEntity;
 import com.niu.model.Recommend;
 import com.niu.model.ScoreRecord;
 import com.niu.model.Student;
@@ -14,6 +16,7 @@ import com.niu.vo.RecommendMajorVO;
 import com.niu.vo.RecommendVO;
 import jakarta.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,9 +42,10 @@ public class RecommendServiceImpl implements RecommendService {
     @Resource
     private MajorService majorService;
 
-
-    @Resource
-    private ScoreRecord scoreRecordService;
+    @Autowired
+    private RecommendUtil recommendUtil;
+    @Autowired
+    private ScoreRecordRepository scoreRecordRepository;
 
 
     @Override
@@ -80,9 +84,11 @@ public class RecommendServiceImpl implements RecommendService {
                 return byStudentId;
             }
         }
-        //todo : 从python获取数据
+        // 从python获取数据
+        List<Integer> recommend = recommendUtil.recommend(userId, score, rank, provinceId, subject);
 
-        List<RecommendEntity> recommendEntitys = List.of();
+        //通过scoreRecordId 获取院校专业信息
+        List<RecommendEntity> recommendEntitys =listRecommendByScoreRecordIDS(recommend,userId);
         // 通过返回直接插入到结果表中
         recommendEntitys.forEach(recommendEntity -> {
             recommendRepository.saveRecommend(userId, recommendEntity.getCollegeId(), recommendEntity.getMajorId(), recommendEntity.getScore());
@@ -94,8 +100,30 @@ public class RecommendServiceImpl implements RecommendService {
         student.setProvinceId(provinceId);
         student.setSubject(subject);
         studentService.updateStudent(student);
+        return convertToRecommendVO(recommendEntitys);
+    }
 
-        return List.of();
+    private List<RecommendEntity> listRecommendByScoreRecordIDS(List<Integer> recommend, Long userId) {
+        List<RecommendEntity> list = recommend.stream().map(
+                x -> {
+                    ScoreRecordEntity scoreRecordById = scoreRecordRepository.getScoreRecordById(x);
+                    return RecommendEntity.
+                            builder().
+                            majorId(scoreRecordById.getMajorId()).
+                            collegeId(scoreRecordById.getCollegeId()).
+                            score(scoreRecordById.getLowScores()).
+                            rank(scoreRecordById.getHighRank()).
+                            studentId(userId).
+                            build();
+                }
+        ).toList();
+
+        //TODO :test
+        list.sort(Comparator.comparing(RecommendEntity::getScore));
+        for (int i = 0; i < list.size(); i++) {
+            list.get(i).setRank(i);
+        }
+        return list;
     }
 
 
