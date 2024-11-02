@@ -1,9 +1,6 @@
 package com.niu.controller;
 
-import com.niu.entity.CollegeEntity;
-import com.niu.entity.DistrictEntity;
-import com.niu.entity.FillEntity;
-import com.niu.entity.MajorEntity;
+import com.niu.entity.*;
 import com.niu.model.*;
 import com.niu.service.CollegeService;
 import com.niu.vo.CollegeCategory;
