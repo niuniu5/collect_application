@@ -144,7 +144,7 @@ public class ExcelImporter {
 
         scoreRecord.setCollegeId(college.getId());
         scoreRecord.setProvinceId(provinceId);
-        if(majorRepository.getMajorByName(data.getMajorName()) == null) {
+        if(majorRepository.getMajorByCollegeIdAndName(college.getId(), data.getMajorName()) == null) {
             MajorEntity major = new MajorEntity();
             major.setName(data.getMajorName());
             major.setCollegeId(college.getId());
@@ -161,7 +161,7 @@ public class ExcelImporter {
             majorRepository.save(major);
         }
 
-        scoreRecord.setMajorId(majorRepository.getMajorByName(data.getMajorName()).getId());
+        scoreRecord.setMajorId(majorRepository.getMajorByCollegeIdAndName(college.getId(),data.getMajorName()).getId());
         scoreRecord.setYear(data.getYear());
         scoreRecord.setBatchNumber(data.getBatchNumber());
 
@@ -232,31 +232,31 @@ public class ExcelImporter {
             college.setAttribution(data.getCollegeBelong());
             collegeRepository.save(college);
         }
-        scoreRecord.setCollegeId(college.getId());
-        scoreRecord.setProvinceId(college.getProvinceId()==null?college.getCityId():college.getProvinceId());
-        if(majorRepository.getMajorByName(data.getMajorName()) == null){
-            MajorEntity major = new MajorEntity();
-            major.setName(data.getMajorName());
-            major.setType(AcademicType.fromDescription(data.getCategory()));
-            major.setSubject(data.getSubject());
-            majorRepository.save(major);
-        }
-
-        scoreRecord.setMajorId(majorRepository.getMajorByName(data.getMajorName()).getId());
-        scoreRecord.setYear(data.getYear());
-        scoreRecord.setBatchNumber(data.getBatchNumber());
-
-        int lowScore =  convertStringToInt(data.getLowScore());
-        int lowRank = convertStringToInt(data.getLowRank());
-        int avgScore = convertStringToInt(data.getAvgScore());
-        int highScore = convertStringToInt(data.getHighScore());
-        scoreRecord.setLowScores(lowScore);
-        scoreRecord.setLowRank(lowRank);
-        scoreRecord.setAvgScores(avgScore);
-        scoreRecord.setHighScores(highScore);
-
-        scoreRecord.setType(EnrollmentType.fromDescription(data.getType()));
-        scoreRecordRepository.save(scoreRecord);
+//        scoreRecord.setCollegeId(college.getId());
+//        scoreRecord.setProvinceId(college.getProvinceId()==null?college.getCityId():college.getProvinceId());
+//        if(majorRepository.getMajorByCollegeIdAndName(college.getId(), data.getMajorName()) == null){
+//            MajorEntity major = new MajorEntity();
+//            major.setName(data.getMajorName());
+//            major.setType(AcademicType.fromDescription(data.getCategory()));
+//            major.setSubject(data.getSubject());
+//            majorRepository.save(major);
+//        }
+//
+//        scoreRecord.setMajorId(majorRepository.getMajorByName(data.getMajorName()).getId());
+//        scoreRecord.setYear(data.getYear());
+//        scoreRecord.setBatchNumber(data.getBatchNumber());
+//
+//        int lowScore =  convertStringToInt(data.getLowScore());
+//        int lowRank = convertStringToInt(data.getLowRank());
+//        int avgScore = convertStringToInt(data.getAvgScore());
+//        int highScore = convertStringToInt(data.getHighScore());
+//        scoreRecord.setLowScores(lowScore);
+//        scoreRecord.setLowRank(lowRank);
+//        scoreRecord.setAvgScores(avgScore);
+//        scoreRecord.setHighScores(highScore);
+//
+//        scoreRecord.setType(EnrollmentType.fromDescription(data.getType()));
+//        scoreRecordRepository.save(scoreRecord);
     }
 
 
