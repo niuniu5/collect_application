@@ -80,11 +80,14 @@ public class RecommendServiceImpl implements RecommendService {
                 return byStudentId;
             }
         }
-
-        // 调用python 接口
+        //todo : 从python获取数据
 
 
         // 通过返回直接插入到结果表中
+
+        //插入 本次推荐结果， 修改student的推荐参数
+
+
         return List.of();
     }
 

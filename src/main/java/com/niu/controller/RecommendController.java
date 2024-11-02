@@ -26,17 +26,18 @@ public class RecommendController {
         return  recommendService.recommend(userId, score, rank, provinceId, subject);
     }
 
+    /**志愿填报列表**/
+    @RequestMapping("/api/volunteer/list/{userId}")
+    public List<RecommendVO> getVolunteersByUserId(@PathVariable Long userId) {
+        return recommendService.findByStudentId(userId);
+    }
+
     /**志愿推荐并保存**/
     @PostMapping("/api/recommend/save")
     public void saveVolunteer(@RequestParam Integer collegeId, @RequestParam Integer majorId,@RequestParam Long userId,@RequestParam Integer score) {
         recommendService.saveRecommend(userId, collegeId, majorId, score);
     }
 
-    /**志愿填报列表**/
-    @RequestMapping("/api/volunteer/list/{userId}")
-    public List<RecommendVO> getVolunteersByUserId(@PathVariable Long userId) {
-        return recommendService.findByStudentId(userId);
-    }
 
     /**志愿排名更新**/
     @RequestMapping("/api/volunteer/updateRank")
