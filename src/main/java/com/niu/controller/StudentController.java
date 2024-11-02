@@ -30,6 +30,11 @@ public class StudentController {
         return new ResponseEntity<>("saveStudent successful", HttpStatus.CREATED);
     }
 
+    @GetMapping("/api/student/{id}")
+    public Student getUserById(@PathVariable Long id) {
+        return studentService.getStudentById(id);
+    }
+
     /**个人信息更新**/
     /**
     @PostMapping("/account/updateStudent")

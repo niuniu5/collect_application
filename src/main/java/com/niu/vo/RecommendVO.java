@@ -1,7 +1,6 @@
 package com.niu.vo;
 
 import com.niu.model.College;
-import com.niu.model.Recommend;
 import lombok.*;
 
 import java.util.List;
