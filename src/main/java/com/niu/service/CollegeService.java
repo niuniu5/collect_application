@@ -39,7 +39,7 @@ public interface CollegeService {
 
     Page<CollegeEntity> getCollegesByProvinceIdAndCategoryAndNature(Integer provinceId, CollegeCategory category, CollegeNature collegeNature, Pageable pageable);
 
-    Page<MajorEntity> getMajorByCollegeId(Integer id, Pageable pageable);
+    List<MajorEntity> getMajorByCollegeId(Integer id);
 
     List<Fill> getFillByStudentId(Long studentId);
 

@@ -2,6 +2,7 @@ package com.niu.service.impl;
 
 import com.niu.entity.*;
 import com.niu.model.Fill;
+import com.niu.model.Major;
 import com.niu.model.ScoreRecord;
 import com.niu.repository.*;
 import com.niu.service.CollegeService;
@@ -13,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -113,13 +116,12 @@ public class CollegeServiceImpl implements CollegeService {
     }
 
     /**
-     * @param pageable
      * @param id
      * @return
      */
     @Override
-    public Page<MajorEntity> getMajorByCollegeId(Integer id, Pageable pageable) {
-        return majorRepository.getMajorByCollegeId(id, pageable);
+    public List<MajorEntity> getMajorByCollegeId(Integer id) {
+        return majorRepository.getMajorByCollegeId(id);
     }
 
     @Override
@@ -160,11 +162,44 @@ public class CollegeServiceImpl implements CollegeService {
     }
 
 
+
     private College convertToCollege(CollegeEntity collegeEntity) {
+        int collegeId = collegeEntity.getId();
+        List<MajorEntity> majorEntitys = majorRepository.getMajorByCollegeId(collegeId);
+        List<Major> majors = new ArrayList<Major>();
+        for(MajorEntity entity: majorEntitys){
+            int majorId = entity.getId();
+            List<ScoreRecordEntity> sreList = scoreRecordRepository.getScoreRecordByCollegeIdAndMajorId(collegeId,majorId);
+            int lowrank = 0;
+            int lowscore = 0;
+            int numberof = 0;
+            if(sreList.size() >0){
+                ScoreRecordEntity sre = sreList.get(0);
+                lowrank = sre.getLowRank();
+                lowscore = sre.getLowScores();
+                numberof = sre.getNumberof();
+            }
+            Major major = new Major(entity.getId(), entity.getName(), entity.getCode(), entity.getCharacteristic(),
+                    entity.getSubjectGroup(), lowscore, lowrank, numberof);
+            majors.add(major);
+
+        }
+
+        int cityId =  collegeEntity.getCityId();
+        DistrictEntity dictrict = districtRepository.getDictrictByCityId(cityId);
+        String province = "";
+        if(dictrict.getParent() == null){
+            province = dictrict.getName().replace("市","");
+        }else{
+            DistrictEntity dictrict2 = districtRepository.getDictrictByCityId(dictrict.getParent());
+            province = dictrict2.getName();
+        }
         return new College(collegeEntity.getId(), collegeEntity.getName(), collegeEntity.getFormerName(),
-                collegeEntity.getInfo(), collegeEntity.getProvinceId(), collegeEntity.getCityId(),
+                collegeEntity.getInfo(), province, dictrict.getName(),
                 collegeEntity.getSorted(), collegeEntity.getIs985(), collegeEntity.getIs211(), collegeEntity.getIsDoubleFirstClass(),
-                collegeEntity.getAttribution(), collegeEntity.getCategory(), collegeEntity.getNature(), collegeEntity.getEnrollmentCode());
+                collegeEntity.getAttribution(), collegeEntity.getCategory().getDescription(),
+                collegeEntity.getNature().getDescription(),
+                collegeEntity.getEnrollmentCode(),majors);
     }
 
     @Override

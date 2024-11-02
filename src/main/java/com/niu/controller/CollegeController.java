@@ -2,6 +2,9 @@ package com.niu.controller;
 
 import com.niu.entity.*;
 import com.niu.model.*;
+import com.niu.repository.DistrictRepository;
+import com.niu.repository.MajorRepository;
+import com.niu.repository.ScoreRecordRepository;
 import com.niu.service.CollegeService;
 import com.niu.vo.CollegeCategory;
 import com.niu.vo.CollegeNature;
@@ -23,9 +26,21 @@ public class CollegeController {
     @Resource
     private CollegeService collegeService;
 
-    /** 查询所有省份,显示所有省和直辖市,用于筛选学校**/
+    @Resource
+    private MajorRepository majorRepository;
+
+    @Resource
+    private ScoreRecordRepository scoreRecordRepository;
+
+    @Resource
+    private DistrictRepository districtRepository;
+
+
+    /**
+     * 查询所有省份,显示所有省和直辖市,用于筛选学校
+     **/
     @RequestMapping("/getAllProvince")
-    public List<SimpleForm> getAllProvince(){
+    public List<SimpleForm> getAllProvince() {
         List<DistrictEntity> districts = collegeService.getAllDistrict();
         List<SimpleForm> results = new ArrayList<SimpleForm>();
         for (DistrictEntity district : districts) {
@@ -38,34 +53,39 @@ public class CollegeController {
 
     /**
      * 查询所有省份及所包含的市,用于学生筛选
+     *
      * @return
      */
     @RequestMapping("/getAllDistrict")
-    public List<DistrictDto> getAllDistrict(){
-        List<DistrictDto> districtForms  = new ArrayList<DistrictDto>();
+    public List<DistrictDto> getAllDistrict() {
+        List<DistrictDto> districtForms = new ArrayList<DistrictDto>();
         List<DistrictEntity> districts = collegeService.getAllDistrict();
-        districtForms =convertToDtoList(districts);
+        districtForms = convertToDtoList(districts);
         return districtForms;
     }
 
-    /**查询院校类型**/
+    /**
+     * 查询院校类型
+     **/
     @RequestMapping("/getAllCategory")
-    public Map<String, String> getAllCategory(){
+    public Map<String, String> getAllCategory() {
         Map<String, String> categoryMap = new HashMap<String, String>();
         CollegeCategory[] values = CollegeCategory.values();
         for (CollegeCategory value : values) {
             String name = value.getDescription();
-            categoryMap.put(value.getName(),name);
+            categoryMap.put(value.getName(), name);
         }
         return categoryMap;
     }
 
-    /**查询办学类型**/
+    /**
+     * 查询办学类型
+     **/
     @RequestMapping("/getAllNature")
-    public Map<String, String> getAllNature(){
+    public Map<String, String> getAllNature() {
         Map<String, String> natureMap = new HashMap<String, String>();
         CollegeNature[] values = CollegeNature.values();
-        for (CollegeNature value : values){
+        for (CollegeNature value : values) {
             String name = value.getDescription();
             natureMap.put(value.getName(), name);
         }
@@ -73,7 +93,9 @@ public class CollegeController {
     }
 
 
-    /** 查询所有大学,选院校页面 **/
+    /**
+     * 查询所有大学,选院校页面
+     **/
 
     @RequestMapping("/searchColleges")
     public Page<CollegeEntity> SearchColleges(@RequestParam(required = false) Integer provinceId,
@@ -84,34 +106,40 @@ public class CollegeController {
                                               @RequestParam(required = false) Boolean is985,
                                               @RequestParam(required = false) Boolean is211,
                                               @RequestParam(required = false) Boolean isDoubleFirstClass,
-                                              @RequestParam(required = false) String attribution){
+                                              @RequestParam(required = false) String attribution) {
         Pageable pageable = PageRequest.of(page, 10);
         return collegeService.getCollegeByCondition(provinceId, collegeName, category,
-                nature, is985,is211, isDoubleFirstClass, attribution, pageable);
+                nature, is985, is211, isDoubleFirstClass, attribution, pageable);
     }
 
-    /** 根据id查大学,查询详情**/
+    /**
+     * 根据id查大学,查询详情
+     **/
     @RequestMapping("/college/getCollegeById/{id}")
     public College getCollegeById(@PathVariable("id") Integer id) {
         return collegeService.getCollegeById(id);
     }
 
 
-    /** 根据大学id查专业**/
+    /**
+     * 根据大学id查专业
+     **/
     @RequestMapping("/college/getMajorByCollegeId/{id}")
-    public List<MajorEntity> getMajorByCollegeId(@PathVariable("id") Integer id, Pageable pageable) {
+    public List<MajorEntity> getMajorByCollegeId(@PathVariable("id") Integer id) {
         return collegeService.getMajorByCollegeId(id);
     }
 
-    /** 查询分数计划**/
+    /**
+     * 查询分数计划
+     **/
     @RequestMapping("/college/getScoreRecordByCollegeId/{collegeId}")
-    public List<ScoreRecord> getScoreRecordByCollegeId(@PathVariable("collegeId")Integer collegeId) {
+    public List<ScoreRecord> getScoreRecordByCollegeId(@PathVariable("collegeId") Integer collegeId) {
         return collegeService.getScoreRecordByCollegeId(collegeId);
     }
 
 
     @PostMapping("/college/saveFill")
-    public void saveFill(@RequestBody  FillEntity fillEntity) {
+    public void saveFill(@RequestBody FillEntity fillEntity) {
         collegeService.saveFill(fillEntity);
     }
 
@@ -120,7 +148,6 @@ public class CollegeController {
         FillEntity addedUserVolunteer = collegeService.addUserVolunteer(userVolunteer);
         return new ResponseEntity<FillEntity>(addedUserVolunteer, HttpStatus.CREATED);
     }
-
 
 
     public List<DistrictDto> convertToDtoList(List<DistrictEntity> entities) {
@@ -155,48 +182,6 @@ public class CollegeController {
                 .collect(Collectors.toList());
 
         return rootDtos;
-    }
-
-
-
-
-    private College convertToCollege(CollegeEntity collegeEntity) {
-        int collegeId = collegeEntity.getId();
-        List<MajorEntity> majorEntitys = majorRepository.getMajorByCollegeId(collegeId);
-        List<Major> majors = new ArrayList<Major>();
-        for(MajorEntity entity: majorEntitys){
-            int majorId = entity.getId();
-            List<ScoreRecordEntity> sreList = scoreRecordRepository.getScoreRecordByCollegeIdAndMajorId(collegeId,majorId);
-            int lowrank = 0;
-            int lowscore = 0;
-            int numberof = 0;
-            if(sreList.size() >0){
-                ScoreRecordEntity sre = sreList.get(0);
-                lowrank = sre.getLowRank();
-                lowscore = sre.getLowScores();
-                numberof = sre.getNumberof();
-            }
-            Major major = new Major(entity.getId(), entity.getName(), entity.getCode(), entity.getCharacteristic(),
-                    entity.getSubjectGroup(), lowscore, lowrank, numberof);
-            majors.add(major);
-
-        }
-
-        int cityId =  collegeEntity.getCityId();
-        DistrictEntity dictrict = districtRepository.getDictrictByCityId(cityId);
-        String province = "";
-        if(dictrict.getParent() == null){
-            province = dictrict.getName().replace("市","");
-        }else{
-            DistrictEntity dictrict2 = districtRepository.getDictrictByCityId(dictrict.getParent());
-            province = dictrict2.getName();
-        }
-        return new College(collegeEntity.getId(), collegeEntity.getName(), collegeEntity.getFormerName(),
-                collegeEntity.getInfo(), province, dictrict.getName(),
-                collegeEntity.getSorted(), collegeEntity.getIs985(), collegeEntity.getIs211(), collegeEntity.getIsDoubleFirstClass(),
-                collegeEntity.getAttribution(), collegeEntity.getCategory().getDescription(),
-                collegeEntity.getNature().getDescription(),
-                collegeEntity.getEnrollmentCode(),majors);
     }
 
 }

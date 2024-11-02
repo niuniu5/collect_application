@@ -10,6 +10,7 @@ import java.io.Serializable;
  * @author 牛亚平
  */
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
