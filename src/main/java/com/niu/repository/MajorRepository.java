@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import java.util.List;
 
 @Repository
 public interface MajorRepository extends JpaRepository<MajorEntity, Long> {
@@ -13,6 +14,7 @@ public interface MajorRepository extends JpaRepository<MajorEntity, Long> {
     MajorEntity getMajorByCollegeIdAndName(Integer collegeId, String name);
     MajorEntity getMajorById(Integer id);
     MajorEntity getMajorByName(String name);
-    Page<MajorEntity> getMajorByCollegeId(Integer id, Pageable pageable);
+    @Query("SELECT c FROM MajorEntity c WHERE (c.collegeId = :collegeId) " )
+    List<MajorEntity> getMajorByCollegeId(Integer collegeId);
 
 }

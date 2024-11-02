@@ -89,23 +89,8 @@ public class CollegeController {
                                               @RequestParam(required = false) Boolean isDoubleFirstClass,
                                               @RequestParam(required = false) String attribution){
         Pageable pageable = PageRequest.of(page, 10);
-        Page<CollegeEntity> pc = collegeService.getCollegeByCondition(provinceId, collegeName, category,
+        return collegeService.getCollegeByCondition(provinceId, collegeName, category,
                 nature, is985,is211, isDoubleFirstClass, attribution, pageable);
-        return pc;
-    }
-
-
-    /** 查询所有大学,选院校页面 **/
-    @CrossOrigin
-    @RequestMapping("/getColleges")
-    public List<College> getAllColleges(){
-        return collegeService.getAllColleges();
-    }
-
-    /** 模糊查询大学**/
-    @RequestMapping("/college/getCollegeByName/{name}")
-    public List<College> getCollegeByNameLike(@PathVariable("name") String name) {
-        return collegeService.getCollegeByNameLike(name);
     }
 
     /** 根据id查大学,查询详情**/
@@ -114,37 +99,11 @@ public class CollegeController {
         return collegeService.getCollegeById(id);
     }
 
-    /** 根据省份id查大学**/
-    @RequestMapping("/college/getCollegeByProvinceId/{provinceId}")
-    public Page<CollegeEntity> getCollegesByProvinceId(@PathVariable("provinceId") Integer provinceId, @RequestParam(value = "page", defaultValue = "1") int page,
-                                                       @RequestParam(value = "size", defaultValue = "10") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-        return collegeService.getCollegesByProvinceId(provinceId, pageable);
-    }
-
-    /** 根据大学类别和省份查大学**/
-    @RequestMapping("/college/getCollegesByProvinceIdAndCategory/{category}/{provinceId}")
-    public Page<CollegeEntity>  getCollegesByProvinceIdAndCategory(@PathVariable("provinceId")Integer provinceId, @PathVariable("category")CollegeCategory category, @RequestParam(value = "page", defaultValue = "1") int page,
-                                                                   @RequestParam(value = "size", defaultValue = "10") int size) {
-
-        Pageable pageable = PageRequest.of(page, size);
-
-        return collegeService.getCollegesByProvinceIdAndCategory(provinceId, category, pageable);
-    }
-
-    /**
-     * 根据大学类别、性质和省份查大学
-     **/
-    @RequestMapping("/college/getCollegesByProvinceIdAndCategoryAndNature/{category}/{provinceId}/{nature}")
-    public Page<CollegeEntity> getCollegesByProvinceIdAndCategoryAndNature(@PathVariable("provinceId")Integer provinceId, @PathVariable("category") CollegeCategory category, @PathVariable("nature") CollegeNature nature, Pageable pageable) {
-        return collegeService.getCollegesByProvinceIdAndCategoryAndNature(provinceId, category, nature, pageable);
-    }
 
     /** 根据大学id查专业**/
     @RequestMapping("/college/getMajorByCollegeId/{id}")
-    public Page<MajorEntity> getMajorByCollegeId(@PathVariable("id") Integer id, Pageable pageable) {
-        return collegeService.getMajorByCollegeId(id,pageable);
+    public List<MajorEntity> getMajorByCollegeId(@PathVariable("id") Integer id, Pageable pageable) {
+        return collegeService.getMajorByCollegeId(id);
     }
 
     /** 查询分数计划**/
@@ -199,6 +158,48 @@ public class CollegeController {
                 .collect(Collectors.toList());
 
         return rootDtos;
+    }
+
+
+
+
+    private College convertToCollege(CollegeEntity collegeEntity) {
+        int collegeId = collegeEntity.getId();
+        List<MajorEntity> majorEntitys = majorRepository.getMajorByCollegeId(collegeId);
+        List<Major> majors = new ArrayList<Major>();
+        for(MajorEntity entity: majorEntitys){
+            int majorId = entity.getId();
+            List<ScoreRecordEntity> sreList = scoreRecordRepository.getScoreRecordByCollegeIdAndMajorId(collegeId,majorId);
+            int lowrank = 0;
+            int lowscore = 0;
+            int numberof = 0;
+            if(sreList.size() >0){
+                ScoreRecordEntity sre = sreList.get(0);
+                lowrank = sre.getLowRank();
+                lowscore = sre.getLowScores();
+                numberof = sre.getNumberof();
+            }
+            Major major = new Major(entity.getId(), entity.getName(), entity.getCode(), entity.getCharacteristic(),
+                    entity.getSubjectGroup(), lowscore, lowrank, numberof);
+            majors.add(major);
+
+        }
+
+        int cityId =  collegeEntity.getCityId();
+        DistrictEntity dictrict = districtRepository.getDictrictByCityId(cityId);
+        String province = "";
+        if(dictrict.getParent() == null){
+            province = dictrict.getName().replace("市","");
+        }else{
+            DistrictEntity dictrict2 = districtRepository.getDictrictByCityId(dictrict.getParent());
+            province = dictrict2.getName();
+        }
+        return new College(collegeEntity.getId(), collegeEntity.getName(), collegeEntity.getFormerName(),
+                collegeEntity.getInfo(), province, dictrict.getName(),
+                collegeEntity.getSorted(), collegeEntity.getIs985(), collegeEntity.getIs211(), collegeEntity.getIsDoubleFirstClass(),
+                collegeEntity.getAttribution(), collegeEntity.getCategory().getDescription(),
+                collegeEntity.getNature().getDescription(),
+                collegeEntity.getEnrollmentCode(),majors);
     }
 
 }

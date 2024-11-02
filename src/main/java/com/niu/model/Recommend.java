@@ -34,7 +34,9 @@ public class Recommend implements Serializable {
     /**推荐得分：得分越高越保险*/
     private Integer score;
 
+    /**排序**/
     private Integer rank;
 
+    /**是否填报**/
     private Boolean isFill;
 }

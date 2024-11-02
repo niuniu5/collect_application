@@ -5,6 +5,7 @@ import com.niu.vo.CollegeNature;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -26,10 +27,10 @@ public class College implements Serializable {
     private String info;
 
     /**所属省**/
-    private Integer provinceId;
+    private String provinceId;
 
     /**所属市**/
-    private Integer cityId;
+    private String cityId;
 
     /**软科排名**/
     private Integer sorted;
@@ -47,12 +48,14 @@ public class College implements Serializable {
     private String attribution;
 
     /**学校类别**/
-    private CollegeCategory category;
+    private String category;
 
     /**办学性质**/
-    private CollegeNature nature;
+    private String nature;
 
     /**招生代码**/
     private String enrollmentCode;
+
+    private List<Major> majors;
 
 }

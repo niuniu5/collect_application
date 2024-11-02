@@ -22,4 +22,6 @@ public interface DistrictRepository extends JpaRepository<DistrictEntity, Long> 
     @Query(value = "SELECT c.parent FROM DistrictEntity c WHERE  c.id = :id")
     Integer getProvinceIdByCityId(int id);
 
+    @Query(value = "SELECT c FROM DistrictEntity c WHERE  c.id = :id")
+    DistrictEntity getDictrictByCityId(int id);
 }
