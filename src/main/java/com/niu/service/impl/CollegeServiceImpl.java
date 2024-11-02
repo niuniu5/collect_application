@@ -126,6 +126,16 @@ public class CollegeServiceImpl implements CollegeService {
                 .collect(Collectors.toList());
     }
 
+
+    @Override
+    public List<ScoreRecord> getScoreRecordByCollegeIdAndMajorId(Integer collegeId, Integer majorId) {
+        List<ScoreRecordEntity> scoreRecordEntities = scoreRecordRepository.getScoreRecordByCollegeIdAndMajorId(collegeId,majorId);
+        return scoreRecordEntities.stream()
+                .map(this::convertToScoreRecord)
+                .collect(Collectors.toList());
+    }
+
+
     private ScoreRecord convertToScoreRecord(ScoreRecordEntity scoreRecordEntity) {
         return new ScoreRecord(
                 scoreRecordEntity.getId(),

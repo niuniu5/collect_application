@@ -1,12 +1,15 @@
 package com.niu.entity;
 
+import com.niu.model.Recommend;
 import com.niu.vo.AcademicType;
 import com.niu.vo.Gender;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 考生信息

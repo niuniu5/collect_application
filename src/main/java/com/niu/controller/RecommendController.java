@@ -3,6 +3,7 @@ package com.niu.controller;
 import com.niu.model.Recommend;
 import com.niu.service.CollegeService;
 import com.niu.service.RecommendService;
+import com.niu.vo.RecommendVO;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,15 +21,9 @@ public class RecommendController {
     /**
      * 通过分数,省份,排位,科目 进行志愿推荐, 同时保存这些考生信息
      * **/
-    @RequestMapping("/volunteer/recommend")
-    public void recommend(@RequestParam Integer score,@RequestParam Integer rank,@RequestParam Integer provinceId,@RequestParam String subject) {
-        //调用python 训练的模型
-        System.out.println("score:"+score+" rank:"+rank+" provinceId:"+provinceId+" subject:"+subject);
-
-        //推荐大学ID列表
-        System.out.println("recommend collegeId list");
-        int[] recommendCollegeIdList = {1,2,3,4,5,6,7,8,9,10};
-
+    @RequestMapping("/volunteer/recommend/{userId}")
+    public List<RecommendVO> recommend(@PathVariable Long userId,@RequestParam Integer score,@RequestParam Integer rank,@RequestParam Integer provinceId,@RequestParam String subject) {
+        return  recommendService.recommend(userId, score, rank, provinceId, subject);
     }
 
     /**志愿推荐并保存**/
@@ -39,7 +34,7 @@ public class RecommendController {
 
     /**志愿填报列表**/
     @RequestMapping("/api/volunteer/list/{userId}")
-    public List<Recommend> getVolunt0eersByUserId(@PathVariable Long userId) {
+    public List<RecommendVO> getVolunteersByUserId(@PathVariable Long userId) {
         return recommendService.findByStudentId(userId);
     }
 
