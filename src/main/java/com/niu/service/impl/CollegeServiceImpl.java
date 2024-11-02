@@ -36,8 +36,12 @@ public class CollegeServiceImpl implements CollegeService {
     private DistrictRepository districtRepository;
 
     @Override
-    public Page<CollegeEntity> getCollegeByCondition(Integer provinceId, String collegeName, CollegeCategory category, CollegeNature nature, Pageable pageable) {
-        return collegeRepository.getCollegesByCondition(provinceId, collegeName, category, nature, pageable);
+    public Page<CollegeEntity> getCollegeByCondition(Integer provinceId, String collegeName, CollegeCategory category,
+                                                     CollegeNature nature,Boolean is985, Boolean is211,
+                                                     Boolean isDoubleFirstClass,String attribution,
+                                                     Pageable pageable) {
+        return collegeRepository.getCollegesByCondition(provinceId, collegeName, category, nature,is985,is211,
+                isDoubleFirstClass,attribution, pageable);
     }
 
     @Override

@@ -17,10 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -54,17 +51,46 @@ public class CollegeController {
         return districtForms;
     }
 
+    /**查询院校类型**/
+    @RequestMapping("/getAllCategory")
+    public Map<String, String> getAllCategory(){
+        Map<String, String> categoryMap = new HashMap<String, String>();
+        CollegeCategory[] values = CollegeCategory.values();
+        for (CollegeCategory value : values) {
+            String name = value.getDescription();
+            categoryMap.put(value.getName(),name);
+        }
+        return categoryMap;
+    }
+
+    /**查询办学类型**/
+    @RequestMapping("/getAllNature")
+    public Map<String, String> getAllNature(){
+        Map<String, String> natureMap = new HashMap<String, String>();
+        CollegeNature[] values = CollegeNature.values();
+        for (CollegeNature value : values){
+            String name = value.getDescription();
+            natureMap.put(value.getName(), name);
+        }
+        return natureMap;
+    }
+
 
     /** 查询所有大学,选院校页面 **/
 
     @RequestMapping("/searchColleges")
     public Page<CollegeEntity> SearchColleges(@RequestParam(required = false) Integer provinceId,
-                                                @RequestParam int page,
-                                                @RequestParam(required = false) String collegeName,
-                                                @RequestParam(required = false) CollegeCategory category,
-                                                @RequestParam(required = false) CollegeNature nature){
+                                              @RequestParam int page,
+                                              @RequestParam(required = false) String collegeName,
+                                              @RequestParam(required = false) CollegeCategory category,
+                                              @RequestParam(required = false) CollegeNature nature,
+                                              @RequestParam(required = false) Boolean is985,
+                                              @RequestParam(required = false) Boolean is211,
+                                              @RequestParam(required = false) Boolean isDoubleFirstClass,
+                                              @RequestParam(required = false) String attribution){
         Pageable pageable = PageRequest.of(page, 10);
-        Page<CollegeEntity> pc = collegeService.getCollegeByCondition(provinceId, collegeName, category, nature, pageable);
+        Page<CollegeEntity> pc = collegeService.getCollegeByCondition(provinceId, collegeName, category,
+                nature, is985,is211, isDoubleFirstClass, attribution, pageable);
         return pc;
     }
 
@@ -91,7 +117,7 @@ public class CollegeController {
     /** 根据省份id查大学**/
     @RequestMapping("/college/getCollegeByProvinceId/{provinceId}")
     public Page<CollegeEntity> getCollegesByProvinceId(@PathVariable("provinceId") Integer provinceId, @RequestParam(value = "page", defaultValue = "1") int page,
-                                                 @RequestParam(value = "size", defaultValue = "10") int size) {
+                                                       @RequestParam(value = "size", defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size);
         return collegeService.getCollegesByProvinceId(provinceId, pageable);

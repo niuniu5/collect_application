@@ -16,8 +16,9 @@ import java.util.List;
 
 public interface CollegeService {
 
-    Page<CollegeEntity> getCollegeByCondition(Integer provinceId, String collegeName, CollegeCategory category, CollegeNature nature, Pageable pageable);
-
+    Page<CollegeEntity> getCollegeByCondition(Integer provinceId, String collegeName, CollegeCategory category,
+                                              CollegeNature nature,Boolean is985, Boolean is211,
+                                              Boolean isDoubleFirstClass,String attribution, Pageable pageable);
     List<DistrictEntity> getAllDistrict();
 
     Integer getProvinceIdByCityId(int cityId);

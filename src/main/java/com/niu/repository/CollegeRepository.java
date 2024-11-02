@@ -19,8 +19,15 @@ public interface CollegeRepository  extends JpaRepository<CollegeEntity, Long> {
     @Query("SELECT c FROM CollegeEntity c WHERE (:provinceId IS NULL OR c.provinceId = :provinceId   ) " +
             "AND (:name IS NULL OR c.name LIKE %:name%) " +
             "AND (:category IS NULL OR c.category = :category) " +
-            "AND (:nature IS NULL OR c.nature = :nature)")
-    Page<CollegeEntity> getCollegesByCondition(Integer provinceId, String name, CollegeCategory category, CollegeNature nature, Pageable pageable);
+            "AND (:nature IS NULL OR c.nature = :nature)" +
+            "AND (:is985 IS NULL OR c.is985 = :is985)" +
+            "AND (:is211 IS NULL OR c.is211 = :is211)" +
+            "AND (:isDoubleFirstClass IS NULL OR c.isDoubleFirstClass = :isDoubleFirstClass)" +
+            "AND (:attribution IS NULL OR c.attribution = :attribution)" )
+    Page<CollegeEntity> getCollegesByCondition(Integer provinceId, String name, CollegeCategory category,
+                                               CollegeNature nature, Boolean is985, Boolean is211,
+                                               Boolean isDoubleFirstClass,String attribution,
+                                               Pageable pageable);
 
     @Modifying
     @Transactional

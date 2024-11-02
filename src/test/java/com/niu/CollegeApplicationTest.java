@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-
+import com.niu.common.ExcelImporter;
 import java.util.List;
 
 @SpringBootTest
@@ -19,8 +19,8 @@ public class CollegeApplicationTest {
     @Resource
     CollegeService collegeService;
 
-//    @Resource
-//    ExcelImporter excelImporter;
+    @Resource
+    ExcelImporter excelImporter;
 
     @Test
     public void test(){
@@ -31,7 +31,7 @@ public class CollegeApplicationTest {
          // 读取Excel文件,导入省市数据到cal_district表
 //        excelImporter.importExcel("district.xlsx");
 //        excelImporter.importExcel("2020.xlsx");
-//        excelImporter.importExcel("2021-1.xlsx");
+        excelImporter.importExcel("2021-1.xlsx");
     }
 
 
@@ -55,7 +55,8 @@ public class CollegeApplicationTest {
     @Test
     public void test4(){
         Pageable pageable = PageRequest.of(1, 10);
-        Page<CollegeEntity> pc = collegeService.getCollegeByCondition(null, null, null, null, pageable);
+        Page<CollegeEntity> pc = collegeService.getCollegeByCondition(null, null, null,
+                null, null,null,null,null, pageable);
         System.out.println(pc.getContent().get(0).getId());
     }
 }
