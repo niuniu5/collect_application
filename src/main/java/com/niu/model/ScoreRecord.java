@@ -3,6 +3,7 @@ package com.niu.model;
 import com.niu.vo.EnrollmentType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
 
@@ -15,6 +16,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Setter
 @Getter
+@Component
 public class ScoreRecord implements Serializable {
 
     /**自增长ID*/

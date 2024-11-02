@@ -1,8 +1,6 @@
 package com.niu.service.impl;
 
 import com.niu.entity.RecommendEntity;
-import com.niu.entity.StudentEntity;
-import com.niu.model.College;
 import com.niu.model.Recommend;
 import com.niu.model.ScoreRecord;
 import com.niu.model.Student;
