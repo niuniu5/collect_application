@@ -7,5 +7,5 @@ public interface StudentService {
     void saveStudent(Student student);
     Student getStudentById(Long id);
     void updateStudent(Student student);
-
+    void updateStudentByRecommend(Student student);
 }

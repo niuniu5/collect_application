@@ -76,17 +76,24 @@ public class RecommendServiceImpl implements RecommendService {
         Student studentById = studentService.getStudentById(userId);
         if (IsEqualRecommend(studentById, score, rank, provinceId, subject)) {
             List<RecommendVO> byStudentId = findByStudentId(userId);
-            if (!CollectionUtils.isEmpty(byStudentId)){
+            if (!CollectionUtils.isEmpty(byStudentId)) {
                 return byStudentId;
             }
         }
         //todo : 从python获取数据
 
-
+        List<RecommendEntity> recommendEntitys = List.of();
         // 通过返回直接插入到结果表中
-
+        recommendEntitys.forEach(recommendEntity -> {
+            recommendRepository.saveRecommend(userId, recommendEntity.getCollegeId(), recommendEntity.getMajorId(), recommendEntity.getScore());
+        });
         //插入 本次推荐结果， 修改student的推荐参数
-
+        Student student = new Student();
+        student.setScore(score);
+        student.setRank(rank);
+        student.setProvinceId(provinceId);
+        student.setSubject(subject);
+        studentService.updateStudent(student);
 
         return List.of();
     }

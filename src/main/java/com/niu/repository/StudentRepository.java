@@ -16,9 +16,14 @@ import java.util.Date;
 public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
 
 
-    /** 获取学生信息 */
+    /**
+     * 获取学生信息
+     */
     StudentEntity getStudentById(Long id);
-    /** 根据ID，更新学生信息 */
+
+    /**
+     * 根据ID，更新学生信息
+     */
 
 //  @Query("UPDATE AccountEntity a SET a.lastLogin =?2 WHERE a.id =?1")
     @Modifying
@@ -28,5 +33,16 @@ public interface StudentRepository extends JpaRepository<StudentEntity, Long> {
                        @Param("birthday") Date birthday, @Param("provinceId") Integer provinceId, @Param("cityId") Integer cityId,
                        @Param("areaId") Integer areaId, @Param("school") String school, @Param("interests") String interests, @Param("score") Integer score,
                        @Param("academicType") AcademicType academicType, @Param("pluses") Integer pluses, @Param("subject") String subject, @Param("rank") Integer rank);
+
+    //  @Query("UPDATE AccountEntity a SET a.lastLogin =?2 WHERE a.id =?1")
+    @Modifying
+    @Transactional
+    @Query("update StudentEntity s set  s.provinceId=:provinceId, s.score=:score, s.subject=:subject,s.rank=:rank  WHERE s.id =:id")
+    void updateStudentByRecommend(@Param("id") Long id,
+                                  @Param("provinceId") Integer provinceId,
+                                  @Param("score") Integer score,
+                                  @Param("subject") String subject,
+                                  @Param("rank") Integer rank);
+
 
 }

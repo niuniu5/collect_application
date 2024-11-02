@@ -32,42 +32,53 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public void updateStudent(Student student) {
-        studentRepository.updateStudent(student.getId(),student.getName(),student.getPhone(),student.getGender(),
-                student.getBirthday(),student.getProvinceId(),student.getCityId(),student.getAreaId(),student.getSchool(),
-                student.getInterests(),student.getScore(),student.getAcademicType(),student.getPluses(),student.getSubject(),student.getRank());
+        studentRepository.updateStudent(student.getId(), student.getName(), student.getPhone(), student.getGender(),
+                student.getBirthday(), student.getProvinceId(), student.getCityId(), student.getAreaId(), student.getSchool(),
+                student.getInterests(), student.getScore(), student.getAcademicType(), student.getPluses(), student.getSubject(), student.getRank());
+    }
+
+    @Override
+    public void updateStudentByRecommend(Student student) {
+        studentRepository.updateStudentByRecommend(student.getId(),
+                student.getProvinceId(),
+                student.getScore(),
+                student.getSubject(),
+                student.getRank());
     }
 
 
-    /**public Student getStudentById(Long id) {
-        return null;
-    }
-
-    public Student updateStudent(Long id, Student student) {
-        return null;
-    }
-
-
-    public Student getStudentById(Integer id) {
-        StudentEntity studentEntity = studentRepository.getStudentById(id);
-        return convertStudentEntity(studentEntity);
-    }
-
-
-    public void updateStudent(Student student) {
-        studentRepository.updateStudent(convertStudentEntity(student));
-    }**/
+    /**
+     * public Student getStudentById(Long id) {
+     * return null;
+     * }
+     * <p>
+     * public Student updateStudent(Long id, Student student) {
+     * return null;
+     * }
+     * <p>
+     * <p>
+     * public Student getStudentById(Integer id) {
+     * StudentEntity studentEntity = studentRepository.getStudentById(id);
+     * return convertStudentEntity(studentEntity);
+     * }
+     * <p>
+     * <p>
+     * public void updateStudent(Student student) {
+     * studentRepository.updateStudent(convertStudentEntity(student));
+     * }
+     **/
 
     private StudentEntity convertStudentEntity(Student student) {
-        return new StudentEntity(student.getId(),student.getName(),student.getPhone(),student.getGender(),
-                student.getBirthday(),student.getProvinceId(),student.getCityId(),student.getAreaId(),student.getSchool(),student.getInterests(),student.getScore(),student.getAcademicType(),student.getPluses(),student.getSubject(),student.getRank());
+        return new StudentEntity(student.getId(), student.getName(), student.getPhone(), student.getGender(),
+                student.getBirthday(), student.getProvinceId(), student.getCityId(), student.getAreaId(), student.getSchool(), student.getInterests(), student.getScore(), student.getAcademicType(), student.getPluses(), student.getSubject(), student.getRank());
     }
 
     private Student convertStudentEntity(StudentEntity student) {
         if (student == null) {
             return null;
-        }else{
-            return new Student(student.getId(),student.getName(),student.getPhone(),student.getGender(),
-                    student.getBirthday(),student.getProvinceId(),student.getCityId(),student.getAreaId(),student.getSchool(),student.getInterests(),student.getScore(),student.getAcademicType(),student.getPluses(),student.getSubject(),student.getRank());
+        } else {
+            return new Student(student.getId(), student.getName(), student.getPhone(), student.getGender(),
+                    student.getBirthday(), student.getProvinceId(), student.getCityId(), student.getAreaId(), student.getSchool(), student.getInterests(), student.getScore(), student.getAcademicType(), student.getPluses(), student.getSubject(), student.getRank());
         }
     }
 }
