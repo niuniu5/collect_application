@@ -99,7 +99,7 @@ public class RecommendServiceImpl implements RecommendService {
         student.setRank(rank);
         student.setProvinceId(provinceId);
         student.setSubject(subject);
-        studentService.updateStudent(student);
+        studentService.updateStudentByRecommend(student);
         return convertToRecommendVO(recommendEntitys);
     }
 
